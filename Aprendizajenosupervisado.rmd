@@ -240,27 +240,29 @@ A partir de 3 o 4 empieza a no mejorar...a lo mejor te quedas corto con 3 grupos
 ##Carga de datos
 
 ```{r}
-coches=mtcars # Base de datos ejemplo en R
+coches <- mtcars # Base de datos ejemplo en R
 ```
-##### 15. Bloque de revisiÃ³n basica del dataset #####
-
+##Revisión Dataset
+```{r}
 str(coches)
 head(coches)
 summary(coches)
+```
 
-## -------------------------------------------------------------------------
+##Modelo Lineal
+###Problema de la multivariabilidad
 
-##### 16. Bloque de modelo lineal #####
-#mpg consumo
-modelo_bruto=lm(mpg~.,data=coches)
+mpg es el consumo por coche
+```{r}
+modelo_bruto <- lm(mpg~.,data=coches)
 summary(modelo_bruto)
 #nada afecta, pero todas las variables representan el 0.869 del consumo. hay multivariabilidad.
-cor(coches)#son muy altar las correlaciones, hay un problemon....
+cor(coches)#son muy altas las correlaciones, hay un problemon....
+```
 
-## -------------------------------------------------------------------------
-
-##### 17. Bloque de modelos univariables #####
-
+##Modelos Univariables
+vamos a ver la relación entre el consumo del coche y cada variable de manera individual:
+```{r}
 modelo1=lm(mpg~cyl,data=coches)#cilindros explica el 0.7262
 summary(modelo1)
 modelo2=lm(mpg~disp,data=coches)
@@ -281,36 +283,60 @@ modelo9=lm(mpg~gear,data=coches)
 summary(modelo9)
 modelo10=lm(mpg~carb,data=coches)
 summary(modelo10)
+```
+Nos fijaremos en las variables que tengan mayor R2 ajustado, R2 ajustado penaliza el ir añadiendo variables de más a nuestro modelo, ya que la tendencia de R2 es aumentar a medida que añadimos variables.
+% de variación explicado por nuestra regresion con respecto al total. Por ejemplo cyl explica el 71.71% de la 
+variación de mpg según nuestro modelo de regresión lineal.
 
-cor(coches)
-
-## -------------------------------------------------------------------------
-
-##### 18. Bloque de Ejercicio #####
-
-## Â¿QuÃ© modelo de regresiÃ³n lineal realizarÃ???as?
+##Elección modelo regresión
+```{r}
 colnames(coches)
 modelo11=lm(mpg~ cyl+wt+carb,data=coches)#busco el que tiene el r^2 ajustado, puede haber 20 o 30 modelos que al final funcionaría.
 summary(modelo11)
+```
+Con 3 variables he conseguido explicar el 82,56% de la variación del consumo.
 
+##Análisis de componentes principales
 
-## -------------------------------------------------------------------------
+Análisis de Componentes Principales ( PCA ) se utiliza para resumir la información en un conjunto de datos descrito por múltiples variables.
+PCA reduce la dimensionalidad de los datos que contienen un gran conjunto de variables. Esto se logra mediante la transformación de las variables iniciales en un nuevo pequeño conjunto de variables sin perder la información más importante en el conjunto de datos original.
+Los principales objetivos del análisis de componentes principales es:
 
-##### 19. Bloque de Analisis de Componentes Principales #####
+* para identificar el patrón oculto en un conjunto de datos
+* para reducir el dimensionnality de los datos mediante la eliminación del ruido y la redundancia en los datos
+* para identificar variables correlacionadas
 
+```{r}
 PCA<-prcomp(coches[,-c(1)],scale. = TRUE)
-#he cambiado la matriz que tenia y tengo 10 nuevas variables, la primera variable tiene variabilidad de 2.4, con las
-#3 primeras variables tengo el 90% de la variabilidad. No sabemos que es la variable 1.
 summary(PCA)
 plot(PCA)
+```
 
-## -------------------------------------------------------------------------
+```{r,warning=FALSE}
+library(ggfortify)
+```
+```{r}
+autoplot(PCA)
+```
+Están representados los 32 coches del dataset
+```{r}
+autoplot(PCA, data = coches, colour = 'cyl')
+```
 
-##### 20. Bloque de ortogonalidad de componentes principales #####
+```{r}
+autoplot(PCA, data = coches, colour = 'cyl',loadings=TRUE)
+```
+```{r}
+autoplot(PCA, label = TRUE, label.size = 3,
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size  = 3)
+```
+he cambiado la matriz que tenia y tengo 10 nuevas variables, la primera variable tiene variabilidad de 2.4, con las 3 primeras variables tengo el 90% de la variabilidad. No sabemos que es la variable 1.
 
+##Ortogonalidad Componentes Principales
+```{r}
 cor(coches)
 cor(PCA$x)
-
+```
 ## -------------------------------------------------------------------------
 
 ##### 21. Bloque de representacion grafica mediante componentes principales #####
