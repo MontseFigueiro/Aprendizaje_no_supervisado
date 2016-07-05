@@ -2,7 +2,7 @@
 title: "Aprendizaje no supervisado"
 author: "Montse Figueiro"
 date: "30 de junio de 2016"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
@@ -434,11 +434,11 @@ load("D:/master/data/Regresiones/samsungData.rda")
 ```
 
 ###Análisis dataset
+7352 observaciones y 563 variables. 
 ```{r}
 str(samsungData)
-head(samsungData)
-tail(samsungData)
 ```
+Veo cuantas observaciones hay para cada tipo de actividad. Veo las dos últimas columnas que tipo de dato tienen.
 ```{r}
 table(samsungData$activity)
 str(samsungData[,c(562,563)])
@@ -446,50 +446,78 @@ str(samsungData[,c(562,563)])
 Vamos a reducir las variables porque hay 563, haremos un PCA
 
 ##Segmentación K-Means
-
+```{r}
 samsungScaled=scale(samsungData[,-c(562,563)])#menos las dos ultimas
 
 set.seed(1234)
 kClust1 <- kmeans(samsungScaled,centers=8)
-
+#Cada observacion la clasifica en un cluster de 1 al 8.
+```
+Creo una tabla las filas serán el número de cluster y las columnas las actividades.
+```{r}
 table(kClust1$cluster,samsungData[,563])
-
+```
+El Cluster 1 tiene 855 observaciones walkup, el 2 653 laying, el 3 tiene 166 walkdown, así determino el nombre:
+```{r}
 nombres8<-c("walkup","laying","walkdown","laying","standing","sitting","laying","walkdown")
-
+```
+```{r}
 Error8=(length(samsungData[,563])-sum(nombres8[kClust1$cluster]==samsungData[,563]))/length(samsungData[,563])
-
 Error8
+```
+Desglosado:
+```{r}
+observ <- length(samsungData[,563])
+observ
+activityk <- nombres8[kClust1$cluster]
+head(activityk)
+activitydata <- samsungData[,563]
+head(activitydata)
+sum(activityk==activitydata)
+
++(7352-641)/7352
+```
+###Tamaño total de observaciones - aciertos/ tamaño total de observaciones, esto mide el porcentaje de error.
 
 ## CLuster con 10 centros.
+```{r}
 set.seed(1234)
 kClust1 <- kmeans(samsungScaled,centers=10)
 
 table(kClust1$cluster,samsungData[,563])
-
+```
+```{r}
 nombres10<-c("walkup","laying","walkdown","sitting","standing","laying","laying","walkdown","sitting","walkup")
 
 Error10=(length(samsungData[,563])-sum(nombres10[kClust1$cluster]==samsungData[,563]))/length(samsungData[,563])
 
 Error10
+```
 
-## -------------------------------------------------------------------------
+El porcentaje de error es menor que con 8 clusters.
 
-##### 28. Bloque de PCA #####
-
+##PCA, Componentes Principales
+```{r}
 PCA<-prcomp(samsungData[,-c(562,563)],scale=TRUE)
-#PCA$rotation
-#attributes(PCA)
+PCA$rotation[1,291] # de PC291, la correlación con la primera variable tBodyAcc-mean()-X
+attributes(PCA)
 summary(PCA)
 plot(PCA)#casi con una variable represento toda la poblacion
-PCA$x[,1:3]
-
+PCA$x[788:798,1:3]
+```
+```{r}
 dev.off()
 par(mfrow=c(1,3))
-plot(PCA$x[,c(1,2)],col=as.numeric(as.factor(samsungData[,563])))#primera con respecto a segunda,tres colores van en positivo y tres van en negativo,si llega uno nuevo se en que grupo lo meteré
-#en dos clusters los podría separar después de ver éste gráfico. PC1>0 y PC!<0
+plot(PCA$x[,c(1,2)],col=as.numeric(as.factor(samsungData[,563])))
+#PC1 y PC2 representados graficamente, cada color representa una actividad
+#primera con respecto a segunda,tres colores van en positivo y tres van en negativo,si llega uno nuevo se en que #grupo lo meteré, en dos clusters los podría separar después de ver éste gráfico. PC1>0 y PC1<0
+
 plot(PCA$x[,c(2,3)],col=as.numeric(as.factor(samsungData[,563])))
 #no le tenemos que intentar buscar sentido a los ejes
-plot(PCA$x[,c(1,3)],col=as.numeric(as.factor(samsungData[,563])))
 
+plot(PCA$x[,c(1,3)],col=as.numeric(as.factor(samsungData[,563])))
+```
+```{}
 par(mfrow=c(1,1))
 plot(PCA$x[,c(1,2)],col=as.numeric(as.factor(samsungData[,563])))
+```
