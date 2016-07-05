@@ -57,12 +57,11 @@ Componentes principales (reducción dimensionalidad):
 * La matriz de covarianzas: a las varianzas le afecta la escala de las unidades. 
 * Matriz de correlaciones: se utiliza porque es la normalizada. Siempre está entre -1 y 1. Los valores propios son todos positivos y suman 1,los puedo ordenar, me da la variabilidad, si me quedo con las primeras filas de cada matriz me va a dar muy parecido porque cojo los valores más altos, casi suman 1. En lugar de 40 dimensiones me quedan 4. Las variables que elegimos son ortogonales (independientes entre si).
 
-*Mayores aplicaciones*: compresión de ficheros, conforme los primeros valores son más altos (mayor variabilidad posible), mejor es la reducción de dimensión.
+* Mayores aplicaciones*: compresión de ficheros, conforme los primeros valores son más altos (mayor variabilidad posible), mejor es la reducción de dimensión.
 
----------------------------------------------------------------------------
+
 HAY QUE PLANTEAR LAS HIPOTESIS PRIMERO Y DEPUÉS COMPROBAR CON OTRO CONJUNTO
 FRAMINGHAM ---- DATOS SOBRE COLESTEROL
----------------------------------------------------------------------------
 
 En los contrastes de hipotesis tu fijas el nivel de confianza
 
@@ -70,7 +69,7 @@ En los contrastes de hipotesis tu fijas el nivel de confianza
 ```{r}
 library(dummies)
 ```
-#CLUSTERING JERARQUICO: NETFLIX MOVIELENS
+#CLUSTERING JERARQUICO: NETFLIX MOVIES
 
 ##Carga de Datos
 ```{r}
@@ -309,9 +308,10 @@ Los principales objetivos del análisis de componentes principales es:
 ```{r}
 PCA<-prcomp(coches[,-c(1)],scale. = TRUE)
 summary(PCA)
-plot(PCA)
+print(PCA)
+plot(PCA,type="l")
 ```
-
+El plot es sencillo para ver cuantos PC necesitas analizar
 ```{r,warning=FALSE}
 library(ggfortify)
 ```
@@ -332,30 +332,82 @@ autoplot(PCA, label = TRUE, label.size = 3,
 ```
 he cambiado la matriz que tenia y tengo 10 nuevas variables, la primera variable tiene variabilidad de 2.4, con las 3 primeras variables tengo el 90% de la variabilidad. No sabemos que es la variable 1.
 
+Podemos usar la función predict si tenemos nuevos datos y queremos predecir sus PC, vamos a imaginar que las dos
+últimas filas de coches son datos nuevos.
+
+**Predict PCs**
+```{r}
+predict(PCA, newdata=tail(coches, 2))
+```
+```{r}
+library(devtools)
+library(ggbiplot)
+```
+
+###Graphic PCA Group by mpg
+```{r}
+groupmpg <- coches[,2]
+g <- ggbiplot(PCA, obs.scale = 1, var.scale = 1, 
+              groups = groupmpg, ellipse = TRUE, 
+              circle = TRUE) + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+
+print(g)
+```
+
 ##Ortogonalidad Componentes Principales
 ```{r}
 cor(coches)
 cor(PCA$x)
 ```
-## -------------------------------------------------------------------------
+##Representación Gráfica PCA
 
-##### 21. Bloque de representacion grafica mediante componentes principales #####
+biplot(PCA) los registros ya los tengo en su sitio, veo que relacion tiene PC1 con las variables, no se que es porque es mezcla de variables.
 
-biplot(PCA)#los registros ya los tengo en su sitio, veo que relacion tiene PC1 con las variables, no se que es porque es mezcla de variables.
+```{r}
+PCA$rotation
+#son las variables, como se relaciona con cada variable.
+```
 
-PCA$rotation#son las variables, como se relaciona con cada variable.
+##Creación variables PCA
 
-## -------------------------------------------------------------------------
+La combinación lineal para el primer componente es:
+```{r}
+a1 <- PCA$rotation[,1]
+a1
+```
+Para computar  PC1 es necesario reescalar los datos principales:
+The value of center determines how column centering is performed. If center is a numeric vector with length equal to the number of columns of x, then each column of x has the corresponding value from center subtracted from it. If center is TRUE then centering is done by subtracting the column means (omitting NAs) of x from their corresponding columns, and if center is FALSE, no centering is done.
 
-##### 22. Bloque de creacion de variables componentes principales #####
-
+The value of scale determines how column scaling is performed (after centering). If scale is a numeric vector with length equal to the number of columns of x, then each column of x is divided by the corresponding value from scale. If scale is TRUE then scaling is done by dividing the (centered) columns of x by their standard deviations if center is TRUE, and the root mean square otherwise. If scale is FALSE, no scaling is done.
+```{r}
+center <- PCA$center
+center
+scale <- PCA$scale
+scale
+cochesm <- as.matrix(coches[,-1])
+cochesm
+drop(scale(cochesm, center = center, scale = scale) %*%
++ PCA$rotation[,1])
+predict(PCA)[,1]
+```
+```{r}
 coches$PCA1=PCA$x[,1]
 coches$PCA2=PCA$x[,2]
 coches$PCA3=PCA$x[,3]
+head(coches)
+```
+PCA Matrix desglosada:
+```{r}
+desv <- PCA[[1]]
+desv
+```
+```{r}
+PCA2 <- as.data.frame(PCA[[2]])
+PCA
+```
 
-## -------------------------------------------------------------------------
-
-##### 23. Bloque de regresion lineal con componentes principales #####
+##Regresión Lineal con componentes principales
 
 modelo_PCA=lm(mpg~PCA1,data=coches)
 summary(modelo_PCA)
@@ -447,5 +499,3 @@ plot(PCA$x[,c(1,3)],col=as.numeric(as.factor(samsungData[,563])))
 
 par(mfrow=c(1,1))
 plot(PCA$x[,c(1,2)],col=as.numeric(as.factor(samsungData[,563])))
-
-## -------------------------------------------------------------------------
