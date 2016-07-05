@@ -644,7 +644,7 @@ mínimo.
     for (i in 2:15) Intra[i] <- sum(kmeans(creditosNumericos, centers=i)$withinss)
     plot(1:15, Intra, type="b", xlab="Numero de Clusters", ylab="Suma de Errores intragrupo")
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-17-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-17-1.png)
 A partir de 3 o 4 empieza a no mejorar...a lo mejor te quedas corto con
 3 grupos.
 
@@ -1108,7 +1108,7 @@ de componentes principales es:
 
     plot(PCA,type="l")
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-23-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-23-1.png)
 El plot es sencillo para ver cuantos PC necesitas analizar
 
     library(ggfortify)
@@ -1117,21 +1117,21 @@ El plot es sencillo para ver cuantos PC necesitas analizar
 
     autoplot(PCA)
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-25-1.png)
 Están representados los 32 coches del dataset
 
     autoplot(PCA, data = coches, colour = 'cyl')
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-26-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-26-1.png)
 
     autoplot(PCA, data = coches, colour = 'cyl',loadings=TRUE)
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-27-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-27-1.png)
 
     autoplot(PCA, label = TRUE, label.size = 3,
              loadings = TRUE, loadings.label = TRUE, loadings.label.size  = 3)
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-28-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-28-1.png)
 he cambiado la matriz que tenia y tengo 10 nuevas variables, la primera
 variable tiene variabilidad de 2.4, con las 3 primeras variables tengo
 el 90% de la variabilidad. No sabemos que es la variable 1.
@@ -1177,7 +1177,7 @@ son datos nuevos.
 
     print(g)
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-31-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-31-1.png)
 
 Ortogonalidad Componentes Principales
 -------------------------------------
@@ -1540,7 +1540,7 @@ Regresión Lineal con componentes principales
 
     biplot(PCA,choices=c(1,3))#hacia un sentido y hacia el otro es lo contrario
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-39-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-39-1.png)
 \#CLUSTERING K-MEANS Y PCA. SAMSUNG MOBILITY DATA
 
     library(ggplot2)
@@ -2179,7 +2179,7 @@ PCA, Componentes Principales
 
     plot(PCA)#casi con una variable represento toda la poblacion
 
-![](Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-51-1.png)
+![](https://github.com/MontseFigueiro/Aprendizaje_no_supervisado/blob/master/Aprendizajenosupervisado_files/figure-markdown_strict/unnamed-chunk-51-1.png)
 
     PCA$x[788:798,1:3]
 
