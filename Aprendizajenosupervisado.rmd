@@ -297,7 +297,7 @@ Con 3 variables he conseguido explicar el 82,56% de la variación del consumo.
 
 ##Análisis de componentes principales
 
-Análisis de Componentes Principales ( PCA ) se utiliza para resumir la información en un conjunto de datos descrito por múltiples variables.
+El ACP construye una transformación lineal que escoge un nuevo sistema de coordenadas para el conjunto original de datos en el cual la varianza de mayor tamaño del conjunto de datos es capturada en el primer eje (llamado el Primer Componente Principal), la segunda varianza más grande es el segundo eje, y así sucesivamente.
 PCA reduce la dimensionalidad de los datos que contienen un gran conjunto de variables. Esto se logra mediante la transformación de las variables iniciales en un nuevo pequeño conjunto de variables sin perder la información más importante en el conjunto de datos original.
 Los principales objetivos del análisis de componentes principales es:
 
@@ -409,6 +409,7 @@ PCA
 
 ##Regresión Lineal con componentes principales
 
+```{r}
 modelo_PCA=lm(mpg~PCA1,data=coches)
 summary(modelo_PCA)
 
@@ -419,39 +420,32 @@ modelo_PCA=lm(mpg~PCA1+PCA3,data=coches)#tengo casi toda la representacion
 summary(modelo_PCA)
 
 biplot(PCA,choices=c(1,3))#hacia un sentido y hacia el otro es lo contrario
+```
+#CLUSTERING K-MEANS Y PCA. SAMSUNG MOBILITY DATA
 
-## -------------------------------------------------------------------------
-##       PARTE 4: CLUSTERING K-MEANS Y PCA. SAMSUNG MOBILITY DATA
-## -------------------------------------------------------------------------
-
-## -------------------------------------------------------------------------
-
-##### 24 Bloque de inicializacion de librerias y establecimiento de directorio #####
-
+```{r,error=FALSE,warning=FALSE}
 library(ggplot2)
 library(effects)
 library(plyr)
+```
+Carga de datos
+```{r}
+load("D:/master/data/Regresiones/samsungData.rda")
+```
 
-## -------------------------------------------------------------------------
-
-##### 25. Bloque de carga de Datos #####
-
-load("samsungData.rda")
-
-## -------------------------------------------------------------------------
-
-##### 26. Bloque de analisis preliminar del dataset #####
-
+###Análisis dataset
+```{r}
 str(samsungData)
 head(samsungData)
 tail(samsungData)
-
+```
+```{r}
 table(samsungData$activity)
 str(samsungData[,c(562,563)])
-#hay que reducir las variables porque hay 563, haremos un PCA
-## -------------------------------------------------------------------------
+```
+Vamos a reducir las variables porque hay 563, haremos un PCA
 
-##### 27. Bloque de segmentacion kmeans #####
+##Segmentación K-Means
 
 samsungScaled=scale(samsungData[,-c(562,563)])#menos las dos ultimas
 
